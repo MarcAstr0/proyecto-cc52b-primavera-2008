@@ -1,0 +1,41 @@
+=== Proyecto: Non-Photorealistic Rendering ===
+Curso: CC52B - Computación Gráfica
+Semestre: Primavera 2008
+Profesor: Patricio Inostroza
+Prof. Aux.: Eduardo Graells
+Alumno: Mario Castro Squella
+
+=== Requerimientos ===
+
+Este proyecto se desarrolló haciendo uso de las siguientes bibliotecas:
+
+- NVIDIA Cg Toolkit (nvidia-cg-toolkit)
+- The OpenGL Extension Wrangler (libglew1.5)
+- the OpenGL Utility Toolkit (libglut3)
+- Qt 4
+
+=== Instalación ===
+
+- Instalar el framework Zahir en el directorio Zahir.
+- Se han agregado nuevos renderers de superficie a Zahir que deben ser ubicados con su path respectivo. Estos son
+
+/Zahir/Visualization/Renderers/Surface/FBORenderer.h
+/Zahir/Visualization/Renderers/Surface/NormalMap/
+/Zahir/Visualization/Renderers/Surface/DepthMap/
+/Zahir/Visualization/Renderers/Surface/SobelFilter/
+/Zahir/Visualization/Renderers/Surface/LaplacianFilter/
+
+=== Compilación ===
+
+En el directorio Apps/NPRModelViewer se encuentra la aplicación. En ese directorio ejecutar:
+
+    % qmake
+    % make
+
+y para ejecutar:
+
+    % ./run.sh
+
+=== Uso de la aplicación ===
+
+Se carga un modelo .obj y con las teclas numéricas del 1 añ 7 se selecciona el tipo de graficador. Con cualquier otra tecla se sale (no muy elegantemente) del programa :p

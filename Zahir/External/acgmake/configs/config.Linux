@@ -1,0 +1,275 @@
+#=============================================================================#
+#                                                                             #
+#                                 acgmake                                     #
+#      Copyright (C) 2001-2007 by Computer Graphics Group, RWTH Aachen        #
+#                          www.rwth-graphics.de                               #
+#                                                                             #
+#=============================================================================#
+
+
+# select the defautl compiler to use
+ifeq ($(CXX_COMP),)
+   CXX_COMP        := g++
+endif
+
+COMP_VERSION=$(shell $(CXX_COMP) -v 2>&1 | tail -n 1 | sed -e 's,[a-zA-Z\ \-]\+\([0-9]\+\.[0-9]\+\).*,\1,')
+ACGDEV=/ACG/acgdev/gcc-$(COMP_VERSION)-$(shell uname -m)
+
+
+# choose default compiler
+COMP ?= gcc
+
+
+# C++ settings
+CXX_OBJ_EXT         ?= .o
+CXX_SHARED_LIB_EXT  ?= .so
+CXX_STATIC_LIB_EXT  ?= .a
+
+
+
+#=============================================================================#
+
+
+ACG_INCDIR := $(ACGDEV)/ACG/include
+ACG_LIBDIR := $(ACGDEV)/ACG/lib
+ACG_LIBS   := ACG
+
+ACG2_INCDIR := $(ACGDEV)/OM2/ACG-2.0/include
+ACG2_LIBDIR := $(ACGDEV)/OM2/ACG-2.0/lib
+ACG2_LIBS   := ACG
+
+ACG2MH_INCDIR := $(ACGDEV)/OM2/ACG-2.0/include
+ACG2MH_LIBDIR := $(ACGDEV)/OM2/ACG-2.0/lib/save.jan
+ACG2MH_LIBS   := ACG
+
+ACG4_INCDIR := $(ACGDEV)/qt4/ACG/include
+ACG4_LIBDIR := $(ACGDEV)/qt4/ACG/lib
+ACG4_LIBS   := ACG
+
+
+OPENMESH_INCDIR := $(ACGDEV)/OpenMesh-1.0/include
+OPENMESH_LIBDIR := $(ACGDEV)/OpenMesh-1.0/lib
+OPENMESH_LIBS   := OpenMesh_Tools OpenMesh_Core
+
+OPENMESH2_INCDIR := $(ACGDEV)/OM2/OpenMesh-2.0/include
+OPENMESH2_LIBDIR := $(ACGDEV)/OM2/OpenMesh-2.0/lib
+OPENMESH2_LIBS   := OpenMesh_Tools OpenMesh_Core
+
+OPENMESHOLD_INCDIR := $(ACGDEV)/OpenMesh-old/include
+OPENMESHOLD_LIBDIR := $(ACGDEV)/OpenMesh-old/lib
+OPENMESHOLD_LIBS   := OpenMesh_Tools OpenMesh_Core
+
+
+MBAPP_INCDIR := $(ACGDEV)/mb_app/include
+MBAPP_LIBDIR := $(ACGDEV)/mb_app/lib
+MBAPP_LIBS   := mb_app
+
+MB_INCDIR := $(ACGDEV)/mb/include
+MB_LIBDIR := $(ACGDEV)/mb/lib
+MB_LIBS   := mb_base mb_main mb_app OpenMesh_Tools OpenMesh_Core ACG
+
+
+X11_INCDIR := /usr/X11R6/include
+X11_LIBDIR := /usr/X11R6/lib
+ifeq ($(LIB_TYPE),shared)
+  X11_LIBS   := Xext Xi Xmu X11
+else
+  X11_LIBS   := SM ICE Xext Xi Xmu Xt Xft Xrender Xinerama freetype X11
+endif
+
+
+QT_CFLAGS := -DQT_CLEAN_NAMESPACE -DQT_NO_COMPAT -DQT_THREAD_SUPPORT
+QT_LIBS   := qt-mt
+QT_INCDIR := /usr/include/qt3
+QT_LIBDIR := /usr/lib
+MOC       := /usr/bin/moc
+UIC       := /usr/bin/uic
+
+QT4_CFLAGS := -DQT_CLEAN_NAMESPACE -DQT_NO_COMPAT -DQT_THREAD_SUPPORT
+QT4_LIBS   := QtCore QtGui QtOpenGL QtSvg QtNetwork QtXml QtTest QtSql QtDesigner
+QT4_INCDIR := /usr/include/qt4 /usr/include/qt4/Qt/ /usr/include/qt4/QtCore/ /usr/include/qt4/QtGui/ /usr/include/qt4/QtAssistant /usr/include/qt4/QtDesigner /usr/include/qt4/QtNetwork /usr/include/qt4/QtOpenGL /usr/include/qt4/QtSql /usr/include/qt4/QtSvg /usr/include/qt4/QtTest /usr/include/qt4/QtUiTools /usr/include/qt4/QtXml
+QT4_LIBDIR := /usr/lib
+MOC4       := /usr/bin/moc-qt4
+UIC4       := /usr/bin/uic-qt4
+
+
+CUDA_CFLAGS := 
+CUDA_LIBS   := cudart
+CUDA_INCDIR := /ACG/opt/pckg/cuda/include
+CUDA_LIBDIR := /ACG/opt/pckg/cuda/lib
+NVCC	    := /ACG/opt/pckg/cuda/bin/nvcc
+NVGCC	    := gcc-4.1
+
+
+QT4COMPAT_LIBDIR := /usr/lib
+QT4COMPAT_LIBS   := Qt3Support 
+
+
+OPENGL_INCDIR := /ACG/acgdev/common/OpenGL/include
+OPENGL_LIBDIR := /usr/lib
+OPENGL_LIBS   := GLU GL
+
+
+GLEW_INCDIR   := $(ACGDEV)/OpenGL/include
+GLEW_LIBDIR   := $(ACGDEV)/OpenGL/lib
+GLEW_LIBS     :=  GLEW
+
+
+GLUT_INCDIR   := $(ACGDEV)/OpenGL/include
+GLUT_LIBDIR   := /usr/X11R6/lib
+GLUT_LIBS     := glut
+
+
+CG_INCDIR     := $(ACGDEV)/Cg/include
+CG_LIBDIR     := $(ACGDEV)/Cg/lib
+CG_LIBS       := CgGL Cg
+
+
+INVENTOR_INCDIR     := $(ACGDEV)/OpenInventor/include
+INVENTOR_LIBDIR     := $(ACGDEV)/OpenInventor/lib
+INVENTOR_LIBS       := Inventor
+
+
+BOOST_INCDIR     := $(ACGDEV)/boost/include
+BOOST_LIBDIR     := $(ACGDEV)/boost/lib
+BOOST_LIBS       := boost_regex boost_thread pthread
+
+
+LTILIB_INCDIR := $(ACGDEV)/ltilib/include/
+LTILIB_LIBDIR := $(ACGDEV)/ltilib/lib/
+ifeq ($(CODE_LEVEL),dbg)
+LTILIB_LIBS   := ltid jpeg
+else
+LTILIB_LIBS   := ltir jpeg
+endif
+
+
+LAPACK_INCDIR := /usr/include
+LAPACK_LIBDIR := /usr/lib/
+LAPACK_LIBS   := lapack
+
+
+MKL_INCDIR := $(ACGDEV)/mkl-7.0/include
+MKL_LIBDIR := $(ACGDEV)/mkl-7.0/lib/
+MKL_LIBS   := mkl_lapack mkl_ia32 guide 
+
+
+MPE_INCDIR := /usr/lib/mpich/include/
+MPE_LIBDIR := /usr/lib/mpich/lib/
+MPE_LIBS   := pmpich++ lmpe mpe pmpich mpich pmpich
+MPI_INCDIR := /usr/lib/mpich/include/
+MPI_LIBDIR := /usr/lib/mpich/lib/
+MPI_LIBS   := pmpich++ pmpich mpich pmpich
+
+
+MTL_INCDIR := $(ACGDEV)/mtl-2.1.2-21/include
+
+
+AVIFILE_INCDIR   := $(ACGDEV)/avifile-0.7.37/include
+AVIFILE_LIBDIR   := $(ACGDEV)/avifile-0.7.37/lib
+AVIFILE_LIBS     := aviplay
+
+
+TAUCS_INCDIR := $(ACGDEV)/taucs-2.2/include
+TAUCS_LIBDIR := $(ACGDEV)/taucs-2.2/lib
+TAUCS_LIBS   := taucs lapack_taucs f77blas_taucs cblas_taucs atlas_taucs metis_taucs g2c m
+
+TAUCSFPIC_INCDIR := $(ACGDEV)/taucs-2.2.new/include
+TAUCSFPIC_LIBDIR := $(ACGDEV)/taucs-2.2.new/lib
+TAUCSFPIC_LIBS   := taucs metis atlas blas lapack f77blas
+
+SUPERLU_INCDIR := /usr/include/superlu
+SUPERLU_LIBDIR := /usr/lib
+SUPERLU_LIBS   := superlu
+
+
+GMM_INCDIR := $(ACGDEV)/gmm-1.7/include
+ifeq ($(CODE_LEVEL),dbg)
+GMM_CFLAGS := -DGMM_USES_LAPACK -I/usr/include/superlu
+else
+GMM_CFLAGS := -DGMM_USES_LAPACK -DNOGMM_VERIFY -I/usr/include/superlu
+endif
+
+GMM3_INCDIR := $(ACGDEV)/gmm-3/include
+ifeq ($(CODE_LEVEL),dbg)
+GMM3_CFLAGS := -DGMM_USES_LAPACK
+else
+GMM3_CFLAGS := -DGMM_USES_LAPACK -DNOGMM_VERIFY
+endif
+
+
+XML_INCDIR := /usr/include/libxml2/
+XML_LIBS   := xml2
+
+
+DC1394_INCDIR  := /usr/include/libdc1394/
+DC1394_LIBDIR  := /usr/lib/
+DC1394_LIBS    := dc1394_control 
+
+DC1394-2_INCDIR  := $(ACGDEV)/libdc1394-2.0.1/include/
+DC1394-2_LIBDIR  := $(ACGDEV)/libdc1394-2.0.1/lib/
+DC1394-2_LIBS    := dc1394
+
+
+CGAL_INCDIR := $(ACGDEV)/CGAL-3.2.1/include
+CGAL_LIBDIR := $(ACGDEV)/CGAL-3.2.1/lib
+CGAL_LIBS   := CGAL
+
+
+DEVIL_LIBDIR := $(ACGDEV)/DevIL/lib/
+DEVIL_INCDIR := $(ACGDEV)/DevIL/include
+DEVIL_LIBS   := IL ILU ILUT
+
+
+#FFTW_LIBDIR := $(ACGDEV)/fftw-3.0.1/lib/
+#FFTW_INCDIR := $(ACGDEV)/fftw-3.0.1/include/
+#FFTW_LIBS   := fftw3 fftw3f
+
+FFTW_LIBDIR := /usr/lib
+FFTW_INCDIR := /usr/include
+FFTW_LIBS   := fftw3 fftw3f
+
+
+ANN_LIBDIR := $(ACGDEV)/ann-1.1.1/lib
+ANN_INCDIR := $(ACGDEV)/ann-1.1.1/include
+ANN_LIBS   := ANN
+
+LOG4CPLUS_LIBDIR  := $(ACGDEV)/log4cplus-1.0.2/lib
+LOG4CPLUS_INCDIR  := $(ACGDEV)/log4cplus-1.0.2/include
+LOG4CPLUS_LIBS    := log4cplus
+
+PNG_LIBDIR  := /usr/lib
+PNG_INCDIR  := /usr/include/libpng
+PNG_LIBS    := png
+
+NETPBM_LIBDIR  := /usr/lib
+NETPBM_INCDIR  := /usr/include
+NETPBM_LIBS    := netpbm
+
+OPENFLIPPER_INCDIR    := /ACG/opt/pckg/OpenFlipper
+OPENFLIPPER_MOCINCDIR := /ACG/opt/pckg/OpenFlipper
+
+WII_INCDIR :=/usr/include
+WII_LIBDIR := /usr/lib
+WII_LIBS := cwiid
+
+USB_LIBDIR := /usr/lib
+USB_LIBS := usb usbpp
+
+HID_INCDIR := /usr/include
+HID_LIBDIR := /usr/lib
+HID_LIBS   := hid
+
+WORDNET_INCDIR := /usr/include
+WORDNET_LIBDIR := /usr/lib
+WORDNET_LIBS := wordnet
+
+CUDA_INCDIR := /ACG/opt/pckg/cuda/include
+CUDA_LIBDIR := /ACG/opt/pckg/cuda/lib
+CUDA_LIBS := cudart
+
+CUBLAS_INCDIR := /ACG/opt/pckg/cuda/include
+CUBLAS_LIBDIR := /ACG/opt/pckg/cuda/lib
+CUBLAS_LIBS := cublas
+
+#=============================================================================#

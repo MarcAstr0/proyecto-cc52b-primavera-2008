@@ -1,0 +1,50 @@
+#=============================================================================#
+#                                                                             #
+#                                 acgmake                                     #
+#      Copyright (C) 2001-2007 by Computer Graphics Group, RWTH Aachen        #
+#                          www.rwth-graphics.de                               #
+#                                                                             #
+#=============================================================================#
+
+
+# choose default compiler
+COMP ?= mips
+
+
+#=============================================================================#
+
+
+QTDIR := /ACG/acgdev/mips-7.3/qt3
+QT_CFLAGS := -DQT_CLEAN_NAMESPACE
+QT_INCDIR := $(QTDIR)/include
+QT_LIBDIR := $(QTDIR)/lib
+QT_LIBS   := qt-mt
+MOC       := $(QTDIR)/bin/moc
+UIC       := $(QTDIR)/bin/uic
+
+
+BOOST_INCDIR     := /home/botsch/opt/boost-1.30.2/
+
+
+GLEW_INCDIR   := /ACG/acgdev/mips-7.3/glew/include
+GLEW_LIBDIR   := /ACG/acgdev/mips-7.3/glew/lib
+GLEW_LIBS     :=  GLEW
+
+
+OPENGL_LIBS := GLU GL
+
+
+GLUT_LIBS := glut m X11
+
+
+INVENTOR_LIBS    := Inventor
+INVENTOR_XT_LIBS := InventorXt
+
+
+MATH_LIBS := m
+
+X11_LIBS := ICE Xext Xi Xmu X11
+
+
+#=============================================================================#
+

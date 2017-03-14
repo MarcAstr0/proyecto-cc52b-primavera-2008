@@ -1,0 +1,41 @@
+#=============================================================================#
+#                                                                             #
+#                                 acgmake                                     #
+#      Copyright (C) 2001-2007 by Computer Graphics Group, RWTH Aachen        #
+#                          www.rwth-graphics.de                               #
+#                                                                             #
+#=============================================================================#
+
+
+# choose default compiler
+COMP ?= gcc
+
+
+# C++ settings
+CXX_OBJ_EXT         ?= .o
+CXX_SHARED_LIB_EXT  ?= .dylib
+CXX_STATIC_LIB_EXT  ?= .a
+
+
+#=============================================================================#
+
+
+QT_CFLAGS := -DQT_CLEAN_NAMESPACE -DQT_THREAD_SUPPORT -DQT_SHARED
+QT_INCDIR := $(QTDIR)/include
+QT_LIBDIR := $(QTDIR)/lib
+QT_LIBS   := qt-mt
+MOC       := $(QTDIR)/bin/moc
+UIC       := $(QTDIR)/bin/uic
+
+FW := /System/Library/Frameworks
+
+OPENGL_INCDIR  := $(FW)/OpenGL.framework/Headers/
+OPENGL_LDFLAGS := -framework OpenGL
+
+GLUT_INCDIR  := $(FW)/GLUT.framework/Headers/
+GLUT_LDFLAGS := -framework GLUT
+
+MATH_LIBS := mx m
+
+
+#=============================================================================#

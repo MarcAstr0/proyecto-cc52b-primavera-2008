@@ -1,0 +1,71 @@
+#=============================================================================#
+#                                                                             #
+#                                 acgmake                                     #
+#      Copyright (C) 2001-2007 by Computer Graphics Group, RWTH Aachen        #
+#                          www.rwth-graphics.de                               #
+#                                                                             #
+#=============================================================================#
+
+
+###  CHECK CONFIG  ############################################################
+
+
+# default file extensions
+CXX_HDR_EXT  ?= .hh
+
+ifndef UIC4
+  $(error UIC4 not configured)
+endif
+
+
+###  UIC TARGETS  #############################################################
+
+build-dir    := $(ARCH)_$(COMP)$(COMP_VERSION)_$(CODE_LEVEL)
+
+uic4-files    := $(wildcard *.ui)
+uic4-images   := $(wildcard images/*)
+
+uic4-targets  := $(uic4-files:.ui=$(CXX_HDR_EXT))
+#uic4-targets  += $(uic4-files:.ui=$(CXX_SRC_EXT))
+
+ifneq ($(uic4-images),)
+#uic4-targets  += $(addprefix $(build-dir)/,uic4-images$(CXX_SRC_EXT))
+uic4-curdir   := $(subst $(top-dir)/,,$(cur-dir))
+uic4-proj     := $(subst /,_,$(uic4-curdir))
+endif
+
+
+
+###  EXPLICIT RULES  ##########################################################
+
+
+.PHONY: uic4-clean uic4-build
+
+
+uic4-clean:
+ifneq ($(uic4-targets),)
+	$(HIDE) rm -f $(uic4-targets) $(uic4-old-srcs)
+endif
+
+
+uic4-build: $(uic4-targets)
+
+
+ifneq ($(uic4-images),)
+$(build-dir)/uic4-images$(CXX_SRC_EXT) : $(uic4-images)
+	@ echo ; echo "uic'ing  images ->  $@"
+	$(HIDE) $(UIC4) -embed $(uic4-proj) $(uic4-images) -o $@
+endif
+
+
+###  IMPLICIT RULES  ##########################################################
+
+
+%$(CXX_HDR_EXT): %.ui
+	@ echo ; echo "uic'ing  $<  ->  $@"
+	$(HIDE) $(UIC4) -o $@ $<
+
+#%$(CXX_SRC_EXT): %.ui
+#	@ echo ; echo "uic'ing  $<  ->  $@"
+#	$(HIDE) $(UIC4) -o $@ $<
+

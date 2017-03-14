@@ -1,0 +1,18 @@
+half4 main(half2 coords : TEX0,                                   
+            uniform sampler2D texture) : COLOR                     
+{                                                                  
+    static const half offset = 1.0 / 512.0;                               
+    half4 c  = tex2D(texture, coords);                             
+    half4 bl = tex2D(texture, coords + half2(-offset, -offset));   
+    half4 l  = tex2D(texture, coords + half2(-offset,       0));   
+    half4 tl = tex2D(texture, coords + half2(-offset,  offset));   
+    half4 t  = tex2D(texture, coords + half2(      0,  offset));   
+    half4 ur = tex2D(texture, coords + half2( offset,  offset));   
+    half4 r  = tex2D(texture, coords + half2( offset,       0));   
+    half4 br = tex2D(texture, coords + half2( offset,  offset));   
+    half4 b  = tex2D(texture, coords + half2(      0, -offset));   
+    // scale by 8 to brighten the edges                            
+    return 8 * (c + -0.125 * (bl + l + tl + t + ur + r + br + b)); 
+}
+
+

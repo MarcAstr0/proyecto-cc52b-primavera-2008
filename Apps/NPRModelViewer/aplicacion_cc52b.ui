@@ -1,0 +1,90 @@
+<ui version="4.0" >
+ <class>InterfazAplicacionCC52B</class>
+ <widget class="QMainWindow" name="InterfazAplicacionCC52B" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>768</width>
+    <height>464</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>NPR Model Viewer</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset>
+    <normaloff>images/TeaPot-icon.gif</normaloff>images/TeaPot-icon.gif</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>98</y>
+     <width>768</width>
+     <height>343</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QMenuBar" name="menubar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>768</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuArchivo" >
+    <property name="title" >
+     <string>Archivo</string>
+    </property>
+   </widget>
+   <addaction name="menuArchivo" />
+  </widget>
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>441</y>
+     <width>768</width>
+     <height>23</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_2" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>30</y>
+     <width>768</width>
+     <height>62</height>
+    </rect>
+   </property>
+   <attribute name="dockWidgetArea" >
+    <number>4</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2" >
+    <property name="geometry" >
+     <rect>
+      <x>0</x>
+      <y>21</y>
+      <width>768</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QLabel" name="label" >
+       <property name="text" >
+        <string>1: Phong | 2: Gooch | 3: Toon | 4: Depth Map | 5: Normal Map | 6: Depth Map with edge detection | 7: Normal Map with edge detection</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

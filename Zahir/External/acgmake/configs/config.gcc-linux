@@ -1,0 +1,92 @@
+#=============================================================================#
+#                                                                             #
+#                                 acgmake                                     #
+#      Copyright (C) 2001-2007 by Computer Graphics Group, RWTH Aachen        #
+#                          www.rwth-graphics.de                               #
+#                                                                             #
+#=============================================================================#
+
+
+## SETTINGS ###################################################################
+
+
+#ifeq ($(ARCH),Debian64)
+#   CXX_COMP        := g++
+#else
+#   CXX_COMP        := g++
+#endif
+
+
+ifeq ($(DIST),yes)
+  CXX_DISTCC    := distcc
+endif
+
+CXX_SYSLIBS     := -lpthread
+CXX_DEFS        += -DINCLUDE_TEMPLATES -DARCH_LINUX
+CXX_CFLAGS      += -W -Wall -Wno-unused -Wno-non-virtual-dtor -ftemplate-depth-100
+CXX_CFLAGS      += -pipe -fPIC
+
+CXX_DEFS_DBG    := -DDEBUG
+CXX_CFLAGS_DBG  := -g
+CXX_LDFLAGS_DBG := 
+
+CXX_DEFS_PRF    := -DDEBUG
+CXX_CFLAGS_PRF  := -pg -g
+CXX_LDFLAGS_PRF := -pg 
+
+CXX_DEFS_OPT    := -DDEBUG
+CXX_CFLAGS_OPT  := -O1 -g
+ifeq ($(shell uname -m),x86_64)
+   CXX_CFLAGS_OPT  += -march=athlon64
+else
+   CXX_CFLAGS_OPT  += -march=$(shell uname -m)
+endif
+CXX_LDFLAGS_OPT := 
+
+CXX_DEFS_MAX    := -DNDEBUG
+CXX_CFLAGS_MAX  := -O3 -funroll-loops -fexpensive-optimizations
+CXX_CFLAGS_MAX  += -fomit-frame-pointer 
+ifeq ($(shell uname -m),x86_64)
+   CXX_CFLAGS_MAX  += -march=athlon64
+else
+   CXX_CFLAGS_MAX  += -march=$(shell uname -m)
+endif
+CXX_LDFLAGS_MAX := 
+
+
+ifeq ($(LIB_TYPE),static)
+  CXX_DEFS    += -DACGMAKE_STATIC_BUILD
+endif
+
+ifeq ($(LIB_TYPE),allstatic)
+  CXX_DEFS    += -DACGMAKE_STATIC_BUILD
+  CXX_LDFLAGS += -static
+  CXX_SYSLIBS += -ldl
+endif
+
+
+## FUNCTIONS ##################################################################
+
+
+define cxx-compile
+$(HIDE) $(CXX_DISTCC) $(CXX_COMP) $(CXX_CFLAGS) \
+  -MD -MT $(2) -MF $(2:$(CXX_OBJ_EXT)=.d) -o $(2) -c $(cur-dir)/$(1)
+endef
+
+define cxx-compile-exe
+$(HIDE) $(CXX_COMP) $(1) $(CXX_LDFLAGS) -o $(2)
+endef
+
+define cxx-shared-lib
+$(HIDE) $(CXX_COMP) -shared $(1) $(CXX_LDFLAGS_LIB) -o $(2)
+endef
+
+define cxx-static-lib
+$(HIDE) ar r $(2) $(1)
+endef
+
+cxx-add-ipath += $(addprefix -I,$(1))
+cxx-add-lpath += $(addprefix -L,$(1))
+cxx-add-libs  += $(addprefix -l,$(1))
+CXX_RPATH := -Wl,-rpath,
+cxx-add-rpath += $(addprefix $(CXX_RPATH),$(1))

@@ -1,0 +1,16 @@
+float4x4 modelViewProj: register(c0);
+float depthScale: register(c4);
+struct VS_OUTPUT {
+   float4 Pos: POSITION;
+   float texCoord: TEXCOORD;
+};
+
+VS_OUTPUT main(float4 Pos: POSITION){
+   VS_OUTPUT Out;
+
+   Out.Pos = mul(modelViewProj, Pos);
+   // Pass depth
+   Out.texCoord = depthScale * mul(modelViewProj, Pos).z;
+
+   return Out;
+}

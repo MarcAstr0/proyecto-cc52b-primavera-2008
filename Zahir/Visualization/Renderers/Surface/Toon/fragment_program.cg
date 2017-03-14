@@ -1,0 +1,37 @@
+
+
+void main(	float3 position			: TEXCOORD0,
+			float3 normal			: TEXCOORD1,
+			float3 texcoord			: TEXCOORD2,                        
+			out float4 color     	: COLOR,
+			uniform float4 lightPosition,
+			uniform float4 eyePosition,
+			uniform float3 Kd,
+			uniform float3 Ks,
+			uniform float3 Ka,
+			uniform float shininess,
+			uniform sampler2D textura,
+			uniform sampler2D diffuseRamp,
+			uniform sampler2D specularRamp,
+			uniform int tiene_textura)
+{
+  float3 P = position;
+  float3 N = normalize(normal);
+  float3 L = normalize(float3(lightPosition) - P);
+  float3 V = normalize(float3(eyePosition) - P);
+  float3 H = normalize(L + V);
+  
+  float3 lightColor = float3(1.0, 1.0, 1.0);
+  
+  float3 diffuseIntensity = tex2D(diffuseRamp, float2(max(dot(N, L), 0), 0.5));
+  float3 diffuse = Kd * lightColor * diffuseIntensity;
+  
+  float3 specularIntensity = tex2D(specularRamp, float2(pow(max(dot(N, H), 0), shininess), 0.5));
+  float3 specular = Ks * lightColor * specularIntensity;
+  
+  float4 texture_color = float4(1.0, 1.0, 1.0, 1.0);
+  if (tiene_textura > 0) texture_color = tex2D(textura, texcoord); 
+  color.xyz = diffuse * texture_color + specular;
+  color.w = texture_color.w;
+
+}

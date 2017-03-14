@@ -1,0 +1,63 @@
+#=============================================================================#
+#                                                                             #
+#                                 acgmake                                     #
+#      Copyright (C) 2001-2007 by Computer Graphics Group, RWTH Aachen        #
+#                          www.rwth-graphics.de                               #
+#                                                                             #
+#=============================================================================#
+
+
+###  CHECK CONFIG  ############################################################
+
+
+# default file extensions
+CXX_SRC_EXT  ?= .cc
+CXX_HDR_EXT  ?= .hh
+
+ifndef MOC4
+  $(error MOC4 not configured)
+endif
+
+build-dir := $(ARCH)_$(COMP)$(COMP_VERSION)_$(CODE_LEVEL)
+
+
+###  TARGETS  #################################################################
+
+
+# cur-dir
+moc4-files   := $(sort $(shell grep -l "Q_OBJECT" *$(CXX_HDR_EXT) 2> /dev/null))
+moc4-targets := $(moc4-files:$(CXX_HDR_EXT)=.moc$(CXX_SRC_EXT))
+moc4-targets := $(addprefix $(build-dir)/,$(moc4-targets))
+
+
+# build-dir (uic)
+moc4-files := $(sort $(shell \
+                grep -l "Q_OBJECT" $(build-dir)/*$(CXX_HDR_EXT) 2> /dev/null))
+moc4-targets += $(moc4-files:$(CXX_HDR_EXT)=.moc$(CXX_SRC_EXT))
+
+
+# setup include path: top project dir
+moc-incpath += $(call cxx-add-ipath, $(top-dir))
+
+# setup include path: moc packages
+ifneq ($(PACKAGES),)
+  moc-incpath += $(foreach pckg, $(PACKAGES),\
+	           $(call cxx-add-ipath,$($(call uppercase,$(pckg))_MOCINCDIR)))
+endif
+
+
+###  EXPLICIT RULES  ##########################################################
+
+.PHONY: moc4-clean moc4-build
+
+moc4-clean: 
+
+moc4-build: $(moc4-targets)
+
+
+###  IMPLICIT RULES  ##########################################################
+
+
+$(build-dir)/%.moc$(CXX_SRC_EXT): %$(CXX_HDR_EXT)
+	@ echo ; echo "moc'ing  $<  ->  $@"
+	$(HIDE) $(MOC4) $(moc-incpath) -o $@ $<

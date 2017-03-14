@@ -1,0 +1,58 @@
+#=============================================================================#
+#                                                                             #
+#                                 acgmake                                     #
+#      Copyright (C) 2001-2007 by Computer Graphics Group, RWTH Aachen        #
+#                          www.rwth-graphics.de                               #
+#                                                                             #
+#=============================================================================#
+
+
+###  CHECK CONFIG  ############################################################
+
+
+# default file extensions
+CUDA_SRC_EXT ?= .cu
+OBJ_EXT      ?= .o
+
+ifndef MOC
+  $(error MOC not configured)
+endif
+
+build-dir := $(ARCH)_$(COMP)$(COMP_VERSION)_$(CODE_LEVEL)
+
+
+###  TARGETS  #################################################################
+
+
+# cur-dir
+cuda-files   := $(sort $(shell ls -1 *$(CUDA_SRC_EXT) 2> /dev/null))
+cuda-targets := $(cuda-files:$(CUDA_SRC_EXT)=$(OBJ_EXT))
+cuda-targets := $(addprefix $(build-dir)/,$(cuda-targets))
+
+
+# build-dir (uic)
+#moc-files := $(sort $(shell \
+#                grep -l "Q_OBJECT" $(build-dir)/*$(CUDA_HDR_EXT) 2> /dev/null))
+#moc-targets += $(moc-files:$(CUDA_HDR_EXT)=.moc$(CUDA_SRC_EXT))
+
+
+###  EXPLICIT RULES  ##########################################################
+
+.PHONY: cuda-clean cuda-build
+
+cuda-clean: 
+
+cuda-build: $(cuda-targets)
+
+
+###  IMPLICIT RULES  ##########################################################
+
+
+$(build-dir)/%.o: $(build-dir)/%.c
+	@ echo ; echo "Compile  $<  ->  $@"
+	$(HIDE) $(NVGCC) -pipe -W -Wall -Wno-unused -fPIC -O3 $< -c -o $@
+
+$(build-dir)/%.c: %$(CUDA_SRC_EXT)
+	@ echo ; echo "nvcc'ing  $<  ->  $@"
+	$(HIDE) $(NVCC) -cuda $< -o $@
+

@@ -1,0 +1,58 @@
+#=============================================================================#
+#                                                                             #
+#                                 acgmake                                     #
+#      Copyright (C) 2001-2007 by Computer Graphics Group, RWTH Aachen        #
+#                          www.rwth-graphics.de                               #
+#                                                                             #
+#=============================================================================#
+
+
+###  CHECK CONFIG  ############################################################
+
+
+TEX_LATEX       ?= pdflatex
+TEX_BIBTEX      ?= bibtex
+TEX_MAKEINDEX   ?= makeindex
+TEX_PAPER_TYPE  ?= a4
+
+
+###  TARGETS  #################################################################
+
+
+tex-src-files  := $(wildcard *.tex)
+tex-sty-files  := $(wildcard *.sty)
+tex-main-files := $(shell grep -l "\documentclass" *.tex 2> /dev/null)
+tex-pdf-files  := $(patsubst %.tex,%.pdf,$(tex-main-files))
+tex-bib-files  := $(wildcard *.bib)
+
+
+###  EXPLICIT RULES  ##########################################################
+
+
+.PHONY: pdf
+
+pdflatex-clean: 
+	rm -f $(tex-dvi-files) $(tex-ps-files) $(tex-pdf-files)
+	rm -f *.aux *.lbl *.bbl *.blg *.brf *.log *.out *.toc \
+              *.idx *.ilg *.ind head.tmp body.tmp
+
+pdflatex-build: pdf
+
+pdf: $(tex-pdf-files)
+
+$(tex-pdf-files): $(tex-src-files) $(tex-bib-files) $(tex-sty-files)
+
+
+###  IMPLICIT RULES  ##########################################################
+
+
+%.pdf: %.tex
+	$(TEX_LATEX) $<
+	if [ ! -z `ls *.aux` ] ; then \
+          for i in "*.aux" ; do $(TEX_BIBTEX) `basename $$i .aux` ; done ;\
+  	  $(TEX_LATEX) $< ; \
+	fi
+	if [ ! -z `ls *.idx` ] ; then \
+          for i in "*.idx" ; do $(TEX_MAKEINDEX) $$i ; done ;\
+	fi
+	$(TEX_LATEX) $<
